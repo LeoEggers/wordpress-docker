@@ -198,3 +198,19 @@ aws elbv2 create-listener --load-balancer-arn <load-balancer-arn>   --protocol H
 ## User Data para a Instância EC2
 
 Este script será executado na inicialização da instância EC2.
+
+```bash
+#!/bin/bash
+
+# 1. Atualizar o sistema
+sudo yum update -y
+
+
+# 2. Montar o EFS (substitua <EFS_ID> pelo ID do seu EFS)
+sudo mount -t efs <EFS_ID> ~/efs
+
+# 3. Iniciar o Docker Compose
+cd ~/wordpress
+docker-compose up -d
+
+
