@@ -6,25 +6,13 @@ services:
     ports:
       - "80:80"
     environment:
-      WORDPRESS_DB_HOST: db  # Nome do serviço do MySQL
-      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}     
-      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD} 
-      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}     
+      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST}  # Conectar ao RDS
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
     volumes:
-      - ~/efs:/var/www/html  
+      - ~/efs:/var/www/html  # Volume EFS
     restart: always
-
-  db:
-    image: mysql:5.7  # Imagem do MySQL
-    environment:
-      MYSQL_ROOT_PASSWORD: ${WORDPRESS_DB_PASSWORD}  # Definindo a senha do root
-      MYSQL_DATABASE: ${WORDPRESS_DB_NAME}  # Nome do banco de dados
-      MYSQL_USER: ${WORDPRESS_DB_USER}  # Usuário do banco de dados
-      MYSQL_PASSWORD: ${WORDPRESS_DB_PASSWORD}  # Senha do usuário do banco de dados
-    volumes:
-      - db_data:/var/lib/mysql  # Persistência de dados
 
 volumes:
   efs:
-  db_data:  # Volume para armazenar os dados do MySQL
-
