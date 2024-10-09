@@ -154,14 +154,24 @@ aws ec2 create-image --instance-id <instance-id> --name "MyWordPressAMI" --no-re
 aws ec2 create-launch-template --launch-template-name MyLaunchTemplate   --version-description "Version1"   --launch-template-data '{"ImageId":"<ami-id>", "InstanceType":"t3.micro", "KeyName":"<key-name>", "SecurityGroupIds":["<security-group-id>"], "UserData":"<base64_encoded_user_data>"}'
 ```
 
-## Adicionar Instruções para a Inicialização da Máquina
+## User Data para a Instância EC2
+
+Este script será executado na inicialização da instância EC2.
 
 ```bash
-# Instruções para a inicialização da máquina:
+#!/bin/bash
+
+# 1. Atualizar o sistema
 sudo yum update -y
-sudo mount -t efs fs-08a19a5e85af1072b:/ /home/ec2-user/efs
+
+
+# 2. Montar o EFS (substitua <EFS_ID> pelo ID do seu EFS)
+sudo mount -t efs <EFS_ID> ~/efs
+
+# 3. Iniciar o Docker Compose
 cd ~/wordpress
 docker-compose up -d
+
 ```
 
 ## Criar um Grupo de Auto Scaling
@@ -194,23 +204,4 @@ aws elbv2 register-targets --target-group-arn <target-group-arn>   --targets Id=
 # Criar um listener para o Load Balancer
 aws elbv2 create-listener --load-balancer-arn <load-balancer-arn>   --protocol HTTP --port 80   --default-actions Type=forward,TargetGroupArn=<target-group-arn>
 ```
-
-## User Data para a Instância EC2
-
-Este script será executado na inicialização da instância EC2.
-
-```bash
-#!/bin/bash
-
-# 1. Atualizar o sistema
-sudo yum update -y
-
-
-# 2. Montar o EFS (substitua <EFS_ID> pelo ID do seu EFS)
-sudo mount -t efs <EFS_ID> ~/efs
-
-# 3. Iniciar o Docker Compose
-cd ~/wordpress
-docker-compose up -d
-
 
